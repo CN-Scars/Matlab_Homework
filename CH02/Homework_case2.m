@@ -1,3 +1,5 @@
+clc; clear all; close all;
+
 % 初始化
 num_iterations = 10;  % 迭代次数
 num_teams = 4;  % 团队数
@@ -30,13 +32,13 @@ for t = 2:num_iterations
         % 计算水位
         water_level(t, n) = peaks(pset(t, n, 1), pset(t, n, 2));
         % 更新个体最优
-        if water_level(t, n) > water_level(t-1, n)
+        if water_level(t, n) > max(water_level(1 : t-1, n))
             pbest(n, :) = squeeze(pset(t, n, :));
         end
     end
     % 更新全局最优
-    gbest_idx = find(water_level(t, :) == max(water_level(t, :)), 1);
-    gbest = pbest(gbest_idx, :);
+    [a, b] = find(water_level(1 : t, :) == max(max(water_level(1 : t, :))), 1);
+    gbest = squeeze(pset(a, b, :));
 end
 
 % 线条和标记样式
