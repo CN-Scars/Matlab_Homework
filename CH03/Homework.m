@@ -35,7 +35,7 @@ hold on;
 for t = 2:num_iterations
     for n = 1:num_teams
         % 更新位置
-        for v = 1:2
+        for v = 1:size(pset, 3) % 使代码更加通用，能够处理任何维度的情况
             r1 = rand();  % 随机数r1
             r2 = rand();  % 随机数r2
             velocity(n, v) = w * velocity(n, v) + c1 * r1 * (pbest(n, v) - pset(t-1, n, v)) + c2 * r2 * (gbest(v) - pset(t-1, n, v));
@@ -67,7 +67,7 @@ for t = 2:num_iterations
     pause(0.02);
 end
 
-figure; % 合成图
+figure; % 收敛曲线图
 hold on;
 plot(gbest_value, 'k-^', 'DisplayName','全局最优水位');
 title('全局最优水位变化');
