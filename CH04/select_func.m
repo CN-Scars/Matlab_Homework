@@ -1,7 +1,7 @@
 function [func, search_space_lower_bound, search_space_upper_bound] = select_func(func_num)
     switch func_num
         case 1
-            func = @(x) michalewics(x);
+            func = @(x) michalewicz(x);
             search_space_lower_bound = [0, 0];
             search_space_upper_bound = [pi, pi];
         case 2
@@ -25,7 +25,7 @@ function [func, search_space_lower_bound, search_space_upper_bound] = select_fun
     end
 end
 
-function y = michalewics(x)
+function y = michalewicz(x)
     m = 10;
     d = numel(x);
     y = -sum(sin(x).*sin((1:d).*x.^2/pi).^(2*m));
