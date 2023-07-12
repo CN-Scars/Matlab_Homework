@@ -28,7 +28,7 @@ end
 function y = michalewics(x)
     m = 10;
     d = numel(x);
-    y = -sum(sin(x).*sin((1:d)'.*x.^2/pi).^2*m);
+    y = -sum(sin(x).*sin((1:d).*x.^2/pi).^(2*m));
 end
 
 function y = beale(x)
