@@ -1,7 +1,7 @@
-function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims, target_func, w, c1, c2)
+function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims, target_func, w, c1, c2, search_space_lower_bound, search_space_upper_bound)
 % 初始化
 pset = zeros(num_iterations, num_teams, num_dims);  % 粒子集
-pset(1, :, :) = rand(num_teams, num_dims)*6 - 3;  % 初始位置
+pset(1, :, :) = rand(num_teams, num_dims) * (search_space_upper_bound - search_space_lower_bound) + search_space_lower_bound;  % 初始位置
 value = zeros(num_iterations, num_teams);  % 函数值
 velocity = zeros(num_teams, num_dims);  % 初始速度为0
 gbest_value = zeros(num_iterations, 1);  % 全局最优解的值
@@ -19,7 +19,7 @@ gbest_value(1) = value(1, gbest_idx);  % 存储全局最优解的值
 
 % 绘制初始3D图
 figure(1);
-[X,Y] = meshgrid(-3:0.1:3);
+[X,Y] = meshgrid(search_space_lower_bound:0.1:search_space_upper_bound);
 Z = arrayfun(@(x,y) target_func([x,y]), X, Y);
 mesh(X,Y,Z);
 hold on;
@@ -34,7 +34,7 @@ for t = 2:num_iterations
             velocity(n, v) = w * velocity(n, v) + c1 * r1 * (pbest(n, v) - pset(t-1, n, v)) + c2 * r2 * (gbest(v) - pset(t-1, n, v));
             pset(t, n, v) = pset(t-1, n, v) + velocity(n, v);
             % 边界条件
-            pset(t, n, v) = min(max(pset(t, n, v), -3), 3);
+            pset(t, n, v) = min(max(pset(t, n, v), search_space_lower_bound), search_space_upper_bound);
         end
         % 计算函数值
         value(t, n) = target_func(squeeze(pset(t, n, :)));
