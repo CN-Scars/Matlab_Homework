@@ -1,25 +1,30 @@
-function [func, search_space_lower_bound, search_space_upper_bound] = select_func(func_num)
+function [func, search_space_lower_bound, search_space_upper_bound, optim_type] = select_func(func_num)
     switch func_num
         case 1
             func = @(x) michalewicz(x);
             search_space_lower_bound = [0, 0];
             search_space_upper_bound = [pi, pi];
+            optim_type = 'min';
         case 2
             func = @(x) beale(x);
             search_space_lower_bound = [-4.5, -4.5];
             search_space_upper_bound = [4.5, 4.5];
+            optim_type = 'min';
         case 3
             func = @(x) easom(x);
             search_space_lower_bound = [-100, -100];
             search_space_upper_bound = [100, 100];
+            optim_type = 'min';
         case 4
             func = @(x) rastrigin(x);
             search_space_lower_bound = [-5.12, -5.12];
             search_space_upper_bound = [5.12, 5.12];
+            optim_type = 'max';
         case 5
             func = @(x) schwefel(x);
             search_space_lower_bound = [-500, -500];
             search_space_upper_bound = [500, 500];
+            optim_type = 'max';
         otherwise
             error('Invalid function number! Please select a number between 1 and 5.');
     end

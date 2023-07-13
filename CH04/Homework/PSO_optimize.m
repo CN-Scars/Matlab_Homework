@@ -1,4 +1,4 @@
-function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims, target_func, w, c1, c2, search_space_lower_bound, search_space_upper_bound)
+function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims, target_func, w, c1, c2, search_space_lower_bound, search_space_upper_bound, optim_type)
     % 初始化
     pset = zeros(num_iterations, num_teams, num_dims);  % 粒子集
     pset(1, :, :) = rand(num_teams, num_dims) .* (search_space_upper_bound - search_space_lower_bound) + search_space_lower_bound;  % 初始位置
@@ -10,12 +10,17 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
     for i = 1:num_teams
         value(1, i) = target_func(pset(1, i, :));
     end
+
+    % 根据优化类型调整value
+    if strcmp(optim_type, 'max')
+        value = -value;
+    end
     
     % 初始个体最优和全局最优
     pbest = squeeze(pset(1, :, :));
-    gbest_idx = find(value(1, :) == max(value(1, :)), 1);
+    gbest_idx = find(value(1, :) == min(value(1, :)), 1);
     gbest = pbest(gbest_idx, :);
-    gbest_value(1) = value(1, gbest_idx);  % 存储全局最优解的值
+    gbest_value(1) = -value(1, gbest_idx);  % 存储全局最优解的值
     
     % 绘制初始3D图
     figure(1);
@@ -38,16 +43,22 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
             end
             % 计算函数值
             value(t, n) = target_func(squeeze(pset(t, n, :)));
+            
+            % 根据优化类型调整value
+            if strcmp(optim_type, 'max')
+                value(t, n) = -value(t, n);
+            end
+            
             % 更新个体最优
-            if value(t, n) > max(value(1 : t-1, n))
+            if value(t, n) < min(value(1 : t-1, n))
                 pbest(n, :) = squeeze(pset(t, n, :));
             end
         end
         % 更新全局最优
-        [max_value, max_idx] = max(value(t, :));
-        if max_value > gbest_value(t-1)
-            gbest_value(t) = max_value;
-            gbest = squeeze(pset(t, max_idx, :));
+        [min_value, min_idx] = min(value(t, :));
+        if min_value < gbest_value(t-1)
+            gbest_value(t) = -min_value;
+            gbest = squeeze(pset(t, min_idx, :));
         else
             gbest_value(t) = gbest_value(t-1);
         end
@@ -57,7 +68,11 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
         clf;  % 清除当前figure窗口
         mesh(X,Y,Z);
         hold on;
-        plot3(pset(t,:,1), pset(t,:,2), value(t,:), 'r*');
+        if strcmp(optim_type, 'max')
+            plot3(pset(t,:,1), pset(t,:,2), -value(t,:), 'r*');
+        else
+            plot3(pset(t,:,1), pset(t,:,2), value(t,:), 'r*');
+        end
         hold off;
     
         % 绘制等高线图
@@ -71,7 +86,11 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
         % 更新收敛曲线图
         figure(3);  % 指定图形窗口3
         clf;  % 清除当前figure窗口
-        plot(gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
+        if strcmp(optim_type, 'max')
+            plot(gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
+        else
+            plot(-gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
+        end
         title('全局最优值变化');
         xlabel('迭代次数');
         ylabel('函数值');
