@@ -27,8 +27,14 @@ end
 
 function y = michalewicz(x)
     m = 10;
-    d = numel(x);
-    y = -sum(sin(x).*sin((1:d).*x.^2/pi).^(2*m));
+    d = length(x);
+    sum = 0;
+    for ii = 1:d
+        xi = x(ii);
+        new = sin(xi) * (sin(ii*xi^2/pi))^(2*m);
+        sum  = sum + new;
+    end
+    y = -sum;
 end
 
 function y = beale(x)
