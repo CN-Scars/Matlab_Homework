@@ -54,15 +54,18 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
                 pbest(n, :) = squeeze(pset(t, n, :));
             end
         end
-        % 更新全局最优
-        [min_value, min_idx] = min(value(t, :));
-        if min_value < gbest_value(t-1)
-            gbest_value(t) = -min_value;
-            gbest = squeeze(pset(t, min_idx, :));
-        else
-            gbest_value(t) = gbest_value(t-1);
-        end
-    
+       % 更新全局最优
+       [min_value, min_idx] = min(value(t, :));
+       if strcmp(optim_type, 'max')
+           min_value = -min_value;  % 对于“max”类型，将值反转回去
+       end
+       if min_value < gbest_value(t-1)
+           gbest_value(t) = min_value;
+           gbest = squeeze(pset(t, min_idx, :));
+       else
+           gbest_value(t) = gbest_value(t-1);
+       end
+
         % 更新3D图
         clf;  % 清除当前figure窗口
         subplot(1, 3, 1)
@@ -85,11 +88,8 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
         
         % 更新收敛曲线图
         subplot(1, 3, 3)
-        if strcmp(optim_type, 'max')
-            plot(gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
-        else
-            plot(-gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
-        end
+        plot(gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
+
         title('全局最优值变化');
         xlabel('迭代次数');
         ylabel('函数值');
