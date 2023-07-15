@@ -64,8 +64,9 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
         end
     
         % 更新3D图
-        figure(1);
         clf;  % 清除当前figure窗口
+        subplot(1, 3, 1)
+        set(gcf, 'position', [200, 300, 1600, 400])
         mesh(X,Y,Z);
         hold on;
         if strcmp(optim_type, 'max')
@@ -76,16 +77,14 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
         hold off;
     
         % 绘制等高线图
-        figure(2);  % 指定图形窗口2
-        clf;  % 清除当前figure窗口
+        subplot(1, 3, 2)
         contour(X,Y,Z);
         hold on;
         plot(pset(t,:,1), pset(t,:,2), 'r*');
         hold off;
         
         % 更新收敛曲线图
-        figure(3);  % 指定图形窗口3
-        clf;  % 清除当前figure窗口
+        subplot(1, 3, 3)
         if strcmp(optim_type, 'max')
             plot(gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
         else
