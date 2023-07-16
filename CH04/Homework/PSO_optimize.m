@@ -88,8 +88,11 @@ function [gbest, gbest_value] = PSO_optimize(num_iterations, num_teams, num_dims
         
         % 更新收敛曲线图
         subplot(1, 3, 3)
-        plot(gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
-
+        if strcmp(optim_type, 'max')
+            plot(-gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
+        else
+            plot(gbest_value(1:t), 'k-^', 'DisplayName','全局最优值');
+        end
         title('全局最优值变化');
         xlabel('迭代次数');
         ylabel('函数值');
