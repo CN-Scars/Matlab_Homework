@@ -34,5 +34,5 @@ function error = error_function(EmuD)
     end
 
     % 计算总误差
-    error = sum(abs(y(1, :) - 1)) + sum(abs(y(2, :) - 1));
+    error = T * (sum(abs(y(1, :) - 1)) + sum(abs(y(2, :) - 1)));
 end
